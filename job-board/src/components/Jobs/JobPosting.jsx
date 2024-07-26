@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+
+
+import React, { useState, useEffect } from "react";
 import { database } from "../../firebase/firebase";
 import { ref, push } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -10,7 +12,7 @@ const JobPosting = () => {
   const [location, setLocation] = useState("");
   const [requirements, setRequirements] = useState("");
   const [posterEmail, setPosterEmail] = useState("");
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const auth = getAuth();
@@ -27,116 +29,113 @@ const JobPosting = () => {
   const handlePost = (e) => {
     e.preventDefault();
     if (!user) {
-      alert("You Should Login first");
+      alert("You must be logged in to post a job.");
+      return;
     }
     const jobsRef = ref(database, "jobs");
-    const job = {
-      title,
-      description,
-      location,
-      requirements,
-      posterEmail,
-    };
+    const job = { title, description, location, requirements, posterEmail };
     push(jobsRef, job)
       .then(() => {
         setTitle("");
         setDescription("");
         setLocation("");
         setRequirements("");
-        setPosterEmail("");
+        alert("Job posted successfully!");
       })
       .catch((error) => {
         console.error("Error adding job: ", error);
+        alert("Failed to post job. Please try again.");
       });
   };
 
   if (!user) {
     return (
-      <div>
-        <h1>Post a Job</h1>
-        <p>You must be logged in to post a job.</p>
-        <button>
-          <Link>Login here</Link>
-        </button>
+      <div className="bg-[#EEEDEB] min-h-screen flex items-center justify-center px-4">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
+          <h1 className="text-2xl font-bold text-[#2F3645] mb-4">Post a Job</h1>
+          <p className="text-[#939185] mb-4">You must be logged in to post a job.</p>
+          <Link to="/login" className="bg-[#2F3645] text-white px-4 py-2 rounded-lg hover:bg-[#3a4255] transition duration-300">
+            Login here
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col w-full lg:border-4 lg:w-3/4 m-auto p-8 justify-center items-center gap-8 mt-8 lg:rounded-2xl">
-      <div className="text-text-dark text-3xl font-extrabold">
-        <h1>Post a Job</h1>
-      </div>
-      <div className="">
-        <form onSubmit={handlePost}>
+    <div className="bg-[#EEEDEB] min-h-screen py-12 px-4">
+      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
+        <h1 className="text-3xl font-bold text-[#2F3645] mb-8 text-center">Post a Job</h1>
+        <form onSubmit={handlePost} className="space-y-6">
           <div>
-            <p className="block text-gray-700 text-sm font-bold mb-2">Title:</p>
+            <label htmlFor="title" className="block text-[#2F3645] font-semibold mb-2">Title:</label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="title"
+              className="w-full px-3 py-2 border border-[#E6B9A6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2F3645]"
               type="text"
-              placeholder="title"
+              placeholder="Job Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-            />{" "}
+            />
           </div>
           <div>
-            <p className="block text-gray-700 text-sm font-bold mb-2">
-              Description:
-            </p>
+            <label htmlFor="description" className="block text-[#2F3645] font-semibold mb-2">Description:</label>
             <textarea
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="description"
+              id="description"
+              className="w-full px-3 py-2 border border-[#E6B9A6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2F3645]"
+              placeholder="Job Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
-            />{" "}
+              rows="4"
+            />
           </div>
           <div>
-            <p className="block text-gray-700 text-sm font-bold mb-2">
-              Location:
-            </p>
+            <label htmlFor="location" className="block text-[#2F3645] font-semibold mb-2">Location:</label>
             <input
+              id="location"
+              className="w-full px-3 py-2 border border-[#E6B9A6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2F3645]"
               type="text"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="location"
+              placeholder="Job Location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               required
-            />{" "}
+            />
           </div>
           <div>
-            <p className="block text-gray-700 text-sm font-bold mb-2">
-              Requirements:
-            </p>
+            <label htmlFor="requirements" className="block text-[#2F3645] font-semibold mb-2">Requirements:</label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="requirements"
+              className="w-full px-3 py-2 border border-[#E6B9A6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2F3645]"
               type="text"
-              placeholder="requirements"
+              placeholder="Job Requirements"
               value={requirements}
               onChange={(e) => setRequirements(e.target.value)}
-            />{" "}
+            />
           </div>
           <div>
-          <p className="block text-gray-700 text-sm font-bold mb-2">
-              Your Email:
-            </p>
+            <label htmlFor="email" className="block text-[#2F3645] font-semibold mb-2">Your Email:</label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="email"
+              className="w-full px-3 py-2 border border-[#E6B9A6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2F3645]"
               type="email"
-              placeholder="Enter Your Email"
+              placeholder="Your Email"
               value={posterEmail}
               onChange={(e) => setPosterEmail(e.target.value)}
               required
-            />{" "}
+            />
           </div>
-            <div className="flex items-center justify-center flex-col">
-
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4 w-32" type="submit">Post</button>
-            </div>
+          <div className="flex justify-center">
+            <button
+              className="bg-[#2F3645] text-white px-6 py-3 rounded-lg hover:bg-[#3a4255] transition duration-300"
+              type="submit"
+            >
+              Post Job
+            </button>
+          </div>
         </form>
       </div>
-      
     </div>
   );
 };
