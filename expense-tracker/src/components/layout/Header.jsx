@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import logo from "../../assets/budgetbuddy-high-resolution-logo.png"
+
 
 const Header = () => {
   const { user, logout } = useAuth();
